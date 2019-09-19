@@ -15,8 +15,9 @@ namespace WebApiClient
         {
             client.BaseAddress = new Uri("http://localhost:60390/");
             client.DefaultRequestHeaders.Accept.Clear();
+
             client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/xml"));
+                new MediaTypeWithQualityHeaderValue("application/json"));
             //RunAsync().GetAwaiter().GetResult();
 
             bool runningStatus = true;
@@ -62,9 +63,12 @@ namespace WebApiClient
 
                         break;
                     case "R":
-                        string path = @"http://localhost:60390/api/Employee";
-                        List<Employee> employees = GetEmployeesAsync(path).GetAwaiter().GetResult();
-                        ShowProduct(employees);
+                        //string path = @"http://localhost:60390/api/Employee";
+                        //List<Employee> employees = GetEmployeesAsync(path).GetAwaiter().GetResult();
+                        //ShowProduct(employees);
+
+                        string str = GetAllEmployeeVersion2().GetAwaiter().GetResult();
+                        Console.WriteLine(str);
 
                         break;
                     case "P":
@@ -87,7 +91,7 @@ namespace WebApiClient
 
 
                         Console.WriteLine("Enter Employee Salary");
-                        int newsal;
+                        
                         int.TryParse(Console.ReadLine(), out sal);
                         employeeToUpdate.salary = sal;
 
@@ -131,7 +135,12 @@ namespace WebApiClient
 
         static async Task<Uri> CreateEmployee(Employee employee)
         {
-            HttpResponseMessage responseMessage = await client.PostAsXmlAsync("api/Employee/", employee);
+            //HttpRequestMessage httpRequestMessage = new HttpRequestMessage(new HttpMethod("POST"), $"api/Employee/");
+
+            //httpRequestMessage.Content = employee;
+
+
+            HttpResponseMessage responseMessage = await client.PostAsXmlAsync("api/Employee", employee);
 
             //if(responseMessage.IsSuccessStatusCode)
             //responseMessage.EnsureSuccessStatusCode();
@@ -148,6 +157,21 @@ namespace WebApiClient
             //responseMessage.EnsureSuccessStatusCode();
 
             return responseMessage.Content.ReadAsStringAsync().Result;
+        }
+
+        static async Task<string> GetAllEmployees()
+        {
+            HttpResponseMessage responseMessage = await client.GetAsync($"api/Employee/");
+            string str = responseMessage.Content.ReadAsStringAsync().Result;
+            return str;
+        }
+
+        static async Task<string> GetAllEmployeeVersion2()
+        {
+            HttpResponseMessage responseMessage = await client.GetAsync($"api/2/EmployeeAll/");
+            string str = responseMessage.Content.ReadAsStringAsync().Result;
+            return str;
+
         }
 
         static async Task<string> GetEmployeeById(int id)
