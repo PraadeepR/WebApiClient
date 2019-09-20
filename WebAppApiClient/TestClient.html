@@ -80,20 +80,23 @@
 
             $('#btnRegister').click(function () {
                 $.ajax({
-                    url: '/api/account/register',
+                    url: 'https://localhost:44388/api/account/register',
                     method: 'POST',
-                    date:
+                    //contentType :'text/json',
+                    data:
                     {
-                        email: $('#txtEmail').val,
-                        password: $('#txtPassword').val,
-                        confirmPassword: $('#txtConfirmPassword').val,
+                        email: $('#txtEmail').val(),
+                        password: $('#txtPassword').val(),
+                        confirmPassword: $('#txtConfirmPassword').val(),
                     },
                     success: function () {
+                        //alert('Success');
                         $('#successModel').modal('show');
                     },
                     error: function (jqXHR) {
+                        //alert(jqXHR.responseText);
                         $('#divErrorText').text(jqXHR.responseText);
-                        $('divError').show('fade');
+                        $('#divError').show('fade');
                     }
                 });
 
